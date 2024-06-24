@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+<script src="../controlador/gestionarusuarios.js"></script>
+<link rel="stylesheet" href="../vista/gestionarusuarios.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <img src="../img/logoi2t.jpg" alt="Logo I2T"> 
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../vista/menu.html">Menú</a></li>
+                <li><a href="../vista/pedidos.html">Pedidos</a></li>
+                <li><a href="../vista/gestionarusuarios.html">Gestión de Usuarios</a></li>
+                <li><a href="../vista/login.html">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h2>Gestión de Usuarios</h2>
+        <form id="usuario-form">
+            <label for="username">Nombre de Usuario:</label>
+            <input type="text" id="username" required>
+            
+            <label for="rol">Rol:</label>
+            <select id="rol" required></select>
+            
+            <input type="hidden" id="usuario-id">
+            
+            <button type="submit">Guardar</button>
+            <button type="button" id="cancelar">Cancelar</button>
+        </form>
+        
+        <div id="lista-usuarios"></div>
+    </div>
+</body>
+</html>
