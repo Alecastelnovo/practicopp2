@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../vista/menu.css">
     <script src="../controlador/menu.js"></script>
+    <script src="../controlador/agregarpedido.js"></script>
     <title>Proveedor</title>
 </head>
 
@@ -28,6 +29,11 @@
 
     <div class="contenedor-menu">
         <h2 class = "menudisp">Menú Disponible</h2>
+        
+        <button onclick="agregarPlato()">Agregar Plato</button>
+        <button onclick="modificarPlato()">Modificar Plato</button>
+        <button onclick="eliminarPlato()">Eliminar Plato</button>
+        
         <table id="tabla-menu">
             <thead>
                 <tr>
@@ -42,6 +48,8 @@
                 <!-- Se hacen solas con la info del json -->
             </tbody>
         </table>
+
+
     </div>
 
 
@@ -86,6 +94,10 @@
                 }, 5000);
             }
         });
+
+
+
+
     </script>
 
 

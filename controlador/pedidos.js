@@ -8,15 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectDia = document.getElementById('dia');
     const cancelarPedidoBtn = document.getElementById('cancelar-pedido');
 
+    // Variable para almacenar platos disponibles
+    let platosDisponibles = [];
+
     // Variable para almacenar pedidos
     let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
 
-    // Cargar platos disponibles desde el json
+    // Cargar platos disponibles desde el JSON
     function cargarPlatosDisponibles() {
         fetch('/modelo/ServidorTP.json')
             .then(response => response.json())
             .then(data => {
-                data.comida.forEach(plato => {
+                platosDisponibles = data.comida; // Guardamos los platos en la variable global
+                platosDisponibles.forEach(plato => {
                     const option = document.createElement('option');
                     option.value = plato.id_comida.toString(); // El valor del option es el id_comida
                     option.textContent = plato.nombre_comida;
@@ -25,12 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error al cargar los platos:', error);
-                mensajeErrorDiv.textContent = 'Error al cargar los platos disponibles.';
-                mensajeErrorDiv.style.color = 'red';
-                // Ocultar el mensaje después de 5 segundos
-                setTimeout(() => {
-                    mensajeErrorDiv.textContent = '';
-                }, 5000);
+                mostrarMensajeError('Error al cargar los platos disponibles.');
             });
     }
 
@@ -59,28 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
         pedidoForm.reset();
     }
 
-    // Guardar pedido (simulación de agregar pedido)
+    // Guardar pedido (simulado)
     function guardarPedido(event) {
         event.preventDefault();
-        const plato = selectPlato.value;
+        const platoId = selectPlato.value;
         const dia = selectDia.value;
 
-        if (!plato || !dia) {
-            mostrarMensajeError('Tenes que elegir un plato y un día.');
+        if (!platoId || !dia) {
+            mostrarMensajeError('Tenes que elegir un plato y un dia.');
             return;
         }
 
+        const platoNombre = platosDisponibles.find(plato => plato.id_comida.toString() === platoId).nombre_comida;
+
         const nuevoPedido = {
             usuario: JSON.parse(localStorage.getItem('usuarioActual')).usuario_login, // Usar el usuario logueado
-            plato: plato,
+            plato: platoNombre, // Guardar el nombre del plato en vez del ID
             dia: dia,
             fecha: new Date().toISOString()
         };
 
         // Agregar el nuevo pedido a la lista local
         pedidos.push(nuevoPedido);
-        localStorage.setItem('pedidos', JSON.stringify(pedidos)); // Guardar en localStorage
-
+        localStorage.setItem('pedidos', JSON.stringify(pedidos));
         mostrarMensajeExito('Pedido guardado exitosamente.');
         agregarPedidoALaLista(nuevoPedido);
         ocultarFormulario();
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         listaPedidosDiv.appendChild(pedidoDiv);
 
-        // Agregar funcionalidad a los botones de modificar y eliminar
+        // Esto sirve para agregar funcionalidad a los botones de modificar y eliminar
         pedidoDiv.querySelector('.modificar-pedido').addEventListener('click', () => {
             mostrarFormulario(pedido);
         });
@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Eliminar pedido (Solamente lo simula)
     function eliminarPedido(pedidoDiv, pedido) {
         if (confirm(`¿Seguro que desea eliminar el pedido de ${pedido.usuario} para ${pedido.dia}?`)) {
-            /*Eliminar el pedido local */
+            // Eliminar el pedido de la lista local
             pedidos = pedidos.filter(p => p !== pedido);
-            localStorage.setItem('pedidos', JSON.stringify(pedidos)); // Guardar en localStorage
+            localStorage.setItem('pedidos', JSON.stringify(pedidos)); // Para guardarlo en localStorage
 
             mostrarMensajeExito('Pedido eliminado exitosamente.');
             pedidoDiv.remove();
@@ -137,12 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
-    /* Eventos */
+    // Eventos
     agregarPedidoBtn.addEventListener('click', () => mostrarFormulario(null));
     pedidoForm.addEventListener('submit', guardarPedido);
     cancelarPedidoBtn.addEventListener('click', ocultarFormulario);
 
-    /* Inicializarr */
+    // Inicializar
     cargarPlatosDisponibles();
     cargarPedidos();
 });
